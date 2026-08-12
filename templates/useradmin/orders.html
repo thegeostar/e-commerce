@@ -59,9 +59,11 @@
                                 <td><b>{{c.full_name|title}}</b></td>
                                 <td>{{c.email}}</td>
                                 <td>${{c.price}}</td>
-                                <td><span class="badge alert-secondary">Pending</span></td>
+                                <td><span class="badge alert-secondary">{{c.product_status|title}}</span></td>
                                 {% if c.paid_status == True %}
                                     <td><span class="badge alert-success"></span>Paid</td>
+                                {% elif c.khqr_status == "pending" %}
+                                    <td><span class="badge alert-warning">KHQR &mdash; Needs Review</span></td>
                                 {% else %}
                                     <td><span class="badge alert-danger">Not Paid</span></td>
                                 {% endif %}

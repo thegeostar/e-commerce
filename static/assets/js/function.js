@@ -87,7 +87,7 @@ $(document).ready(function () {
         })
         console.log("Filter Object is: ", filter_object);
         $.ajax({
-            url: '/filter-products',
+            url: '/filter-products/',
             data: filter_object,
             dataType: 'json',
             beforeSend: function () {
@@ -134,7 +134,7 @@ $(document).ready(function () {
     })
 
     // Add to cart functionality
-    $(".add-to-cart-btn").on("click", function () {
+    $(document).on("click", ".add-to-cart-btn", function () {
 
         let this_val = $(this)
         let index = this_val.attr("data-index")
@@ -159,7 +159,7 @@ $(document).ready(function () {
         console.log("Currrent Element:", this_val);
 
         $.ajax({
-            url: '/add-to-cart',
+            url: '/add-to-cart/',
             data: {
                 'id': product_id,
                 'pid': product_pid,
@@ -185,7 +185,7 @@ $(document).ready(function () {
     })
 
 
-    $(".delete-product").on("click", function () {
+    $(document).on("click", ".delete-product", function () {
 
         let product_id = $(this).attr("data-product")
         let this_val = $(this)
@@ -193,7 +193,7 @@ $(document).ready(function () {
         console.log("PRoduct ID:", product_id);
 
         $.ajax({
-            url: "/delete-from-cart",
+            url: "/delete-from-cart/",
             data: {
                 "id": product_id
             },
@@ -213,7 +213,7 @@ $(document).ready(function () {
 
 
 
-    $(".update-product").on("click", function () {
+    $(document).on("click", ".update-product", function () {
 
         let product_id = $(this).attr("data-product")
         let this_val = $(this)
@@ -223,7 +223,7 @@ $(document).ready(function () {
         console.log("PRoduct QTY:", product_quantity);
 
         $.ajax({
-            url: "/update-cart",
+            url: "/update-cart/",
             data: {
                 "id": product_id,
                 "qty": product_quantity,
@@ -253,7 +253,7 @@ $(document).ready(function () {
         console.log("Element is:", this_val);
 
         $.ajax({
-            url: "/make-default-address",
+            url: "/make-default-address/",
             data: {
                 "id": id
             },
@@ -283,7 +283,7 @@ $(document).ready(function () {
         console.log("PRoduct ID IS", product_id);
 
         $.ajax({
-            url: "/add-to-wishlist",
+            url: "/add-to-wishlist/",
             data: {
                 "id": product_id
             },
@@ -292,11 +292,8 @@ $(document).ready(function () {
                 console.log("Adding to wishlist...")
             },
             success: function (response) {
-                // this_val.html("✓")
                 this_val.html("<i class='fas fa-heart text-danger'></i>")
-                if (response.bool === true) {
-                    console.log("Added to wishlist...");
-                }
+                $(".wishlist-items-count").text(response.count)
             }
         })
     })
@@ -310,7 +307,7 @@ $(document).ready(function () {
         console.log("wishlist id is:", wishlist_id);
 
         $.ajax({
-            url: "/remove-from-wishlist",
+            url: "/remove-from-wishlist/",
             data: {
                 "id": wishlist_id
             },
@@ -320,6 +317,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 $("#wishlist-list").html(response.data)
+                $(".wishlist-items-count").text(response.count)
             }
         })
     })
@@ -342,7 +340,7 @@ $(document).ready(function () {
         console.log("MEssage:", message);
 
         $.ajax({
-            url: "/ajax-contact-form",
+            url: "/ajax-contact-form/",
             data: {
                 "full_name": full_name,
                 "email": email,
@@ -390,7 +388,7 @@ $(document).ready(function () {
 //     console.log("Currrent Element:", this_val);
 
 //     $.ajax({
-//         url: '/add-to-cart',
+//         url: '/add-to-cart/',
 //         data: {
 //             'id': product_id,
 //             'qty': quantity,

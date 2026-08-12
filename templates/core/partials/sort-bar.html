@@ -1,0 +1,34 @@
+{% load core_tags %}
+{% comment %}
+Result count + working "Sort by" dropdown. The old markup had a "Show: 50"
+dropdown and a "Sort by" dropdown whose links all pointed at "#", so nothing
+happened when you clicked them. These links carry a ?sort= value that
+core.views.sort_products actually applies.
+{% endcomment %}
+<div class="shop-product-fillter">
+    <div class="totall-product">
+        <p>We found <strong class="text-brand">{{ products|length }}</strong> items for you!</p>
+    </div>
+    <div class="sort-by-product-area">
+        <div class="sort-by-cover">
+            <div class="sort-by-product-wrap">
+                <div class="sort-by">
+                    <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
+                </div>
+                <div class="sort-by-dropdown-wrap">
+                    <span> {{ sort_label }} <i class="fi-rs-angle-small-down"></i></span>
+                </div>
+            </div>
+            <div class="sort-by-dropdown">
+                <ul>
+                    <li><a {% if sort == "featured" %}class="active"{% endif %} href="?{% query_replace sort='featured' %}">Featured</a></li>
+                    <li><a {% if sort == "price" %}class="active"{% endif %} href="?{% query_replace sort='price' %}">Price: Low to High</a></li>
+                    <li><a {% if sort == "-price" %}class="active"{% endif %} href="?{% query_replace sort='-price' %}">Price: High to Low</a></li>
+                    <li><a {% if sort == "newest" %}class="active"{% endif %} href="?{% query_replace sort='newest' %}">Newest</a></li>
+                    <li><a {% if sort == "discount" %}class="active"{% endif %} href="?{% query_replace sort='discount' %}">Biggest discount</a></li>
+                    <li><a {% if sort == "rating" %}class="active"{% endif %} href="?{% query_replace sort='rating' %}">Avg. Rating</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

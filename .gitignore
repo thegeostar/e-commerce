@@ -1,11 +1,13 @@
 # Secrets — never commit
 .env
+ACCOUNTS.md
 
 # Database
 # Contains real email addresses and password hashes for 12 seeded accounts.
 # See README.md if you decide you want the demo data in the repo anyway.
 db.sqlite3
 db.sqlite3.original-backup
+db.sqlite3.backup-*
 *.sqlite3-journal
 
 # Python

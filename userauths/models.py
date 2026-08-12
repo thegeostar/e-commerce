@@ -1,4 +1,3 @@
-from enum import unique
 from django.db import models
 from django.contrib.auth.models import AbstractUser 
 from django.db.models.signals import post_save
@@ -50,7 +49,8 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
 
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    profile, _ = Profile.objects.get_or_create(user=instance)
+    profile.save()
 
  
 post_save.connect(create_user_profile, sender=User)

@@ -18,7 +18,27 @@ class VendorAdmin(admin.ModelAdmin):
 
 class CartOrderAdmin(admin.ModelAdmin):
     list_editable = ['paid_status', 'product_status', 'sku']
-    list_display = ['user',  'price', 'paid_status', 'order_date','product_status', 'sku']
+    list_display = ['user',  'price', 'paid_status', 'order_date','product_status', 'sku', 'payment_method', 'khqr_status', 'khqr_reference', 'khqr_proof_image']
+    list_filter = ['paid_status', 'payment_method', 'khqr_status']
+    search_fields = ['oid', 'khqr_reference', 'email']
+    actions = ['approve_khqr_payments', 'reject_khqr_payments']
+
+    @admin.action(description="Approve KHQR payment and mark as paid")
+    def approve_khqr_payments(self, request, queryset):
+        updated = queryset.update(khqr_status="approved", paid_status=True)
+        self.message_user(request, f"{updated} order(s) approved and marked as paid.")
+
+    @admin.action(description="Reject KHQR payment")
+    def reject_khqr_payments(self, request, queryset):
+        updated = queryset.update(khqr_status="rejected", paid_status=False)
+        self.message_user(request, f"{updated} order(s) rejected.")
+
+    def save_model(self, request, obj, form, change):
+        # Ticking `paid status` by hand would otherwise leave a KHQR order
+        # reading "Paid" and "Pending Verification" at the same time.
+        if obj.payment_method == "khqr" and obj.khqr_status in ("pending", "rejected") and obj.paid_status:
+            obj.khqr_status = "approved"
+        super().save_model(request, obj, form, change)
 
 
 class CartOrderProductsAdmin(admin.ModelAdmin):

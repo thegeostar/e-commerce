@@ -5,7 +5,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                     <span></span> Pages <span></span> Contact
                 </div>
             </div>
@@ -16,28 +16,28 @@
                     <div class="col-xl-10 col-lg-12 m-auto">
                         <section class="row align-items-end mb-50">
                             <div class="col-lg-4 mb-lg-0 mb-md-5 mb-sm-5">
-                                <h4 class="mb-20 text-brand">How can help you ?</h4>
+                                <h4 class="mb-20 text-brand">How can we help you?</h4>
                                 <h1 class="mb-30">Let us know how we can help you</h1>
-                                <p class="mb-20">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
+                                <p class="mb-20">Our team in Phnom Penh answers questions about orders, delivery and returns seven days a week, from 8:00 to 18:00.</p>
+                                <p>Send us a message using the form below, or reach us directly by phone or email — we usually reply within one working day.</p>
                             </div>
                             <div class="col-lg-8">
                                 <div class="row">
                                     <div class="col-lg-6 mb-4">
-                                        <h5 class="mb-20">01. Visit Feedback</h5>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
+                                        <h5 class="mb-20">01. Order &amp; Delivery</h5>
+                                        <p>Questions about where your order is, changing a delivery address, or arranging a return. Have your order ID ready so we can find it quickly.</p>
                                     </div>
                                     <div class="col-lg-6 mb-4">
-                                        <h5 class="mb-20">02. Employer Services</h5>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
+                                        <h5 class="mb-20">02. Selling With Us</h5>
+                                        <p>Want to list your products on the marketplace? Tell us what you sell and we will walk you through opening a vendor account.</p>
                                     </div>
                                     <div class="col-lg-6 mb-lg-0 mb-4">
-                                        <h5 class="mb-20 text-brand">03. Billing Inquiries</h5>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
+                                        <h5 class="mb-20 text-brand">03. Payments &amp; Refunds</h5>
+                                        <p>Problems with a payment, a double charge, or a refund that has not arrived yet. Include the order ID and the date of the transaction.</p>
                                     </div>
                                     <div class="col-lg-6">
-                                        <h5 class="mb-20">04.General Inquiries</h5>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
+                                        <h5 class="mb-20">04. General Inquiries</h5>
+                                        <p>Anything else — feedback on the site, a problem with your account, or a question we have not covered above.</p>
                                     </div>
                                 </div>
                             </div>
@@ -57,26 +57,29 @@
                             <div class="row mb-60">
                                 <div class="col-md-4 mb-4 mb-md-0">
                                     <h4 class="mb-15 text-brand">Office</h4>
-                                    205 North Michigan Avenue, Suite 810<br />
-                                    Chicago, 60601, USA<br />
-                                    <abbr title="Phone">Phone:</abbr> (123) 456-7890<br />
-                                    <abbr title="Email">Email: </abbr><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="395a56574d585a4d797c4f584b58175a5654">[email&#160;protected]</a><br />
+                                    No. 25, Russian Federation Blvd (110)<br />
+                                    Sangkat Toul Kork, Khan Toul Kork<br />
+                                    Phnom Penh 120404, Cambodia<br />
+                                    <abbr title="Phone">Phone:</abbr> 061756481<br />
+                                    <abbr title="Email">Email: </abbr><a href="mailto:daraeng054@gmail.com">daraeng054@gmail.com</a><br />
                                     <a class="btn btn-sm font-weight-bold text-white mt-20 border-radius-5 btn-shadow-brand hover-up"><i class="fi-rs-marker mr-5"></i>View map</a>
                                 </div>
                                 <div class="col-md-4 mb-4 mb-md-0">
                                     <h4 class="mb-15 text-brand">Studio</h4>
-                                    205 North Michigan Avenue, Suite 810<br />
-                                    Chicago, 60601, USA<br />
-                                    <abbr title="Phone">Phone:</abbr> (123) 456-7890<br />
-                                    <abbr title="Email">Email: </abbr><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="85e6eaebf1e4e6f1c5c0f3e4f7e4abe6eae8">[email&#160;protected]</a><br />
+                                    No. 56, Street 240<br />
+                                    Sangkat Chaktomuk, Khan Daun Penh<br />
+                                    Phnom Penh 120211, Cambodia<br />
+                                    <abbr title="Phone">Phone:</abbr> 061756481<br />
+                                    <abbr title="Email">Email: </abbr><a href="mailto:daraeng054@gmail.com">daraeng054@gmail.com</a><br />
                                     <a class="btn btn-sm font-weight-bold text-white mt-20 border-radius-5 btn-shadow-brand hover-up"><i class="fi-rs-marker mr-5"></i>View map</a>
                                 </div>
                                 <div class="col-md-4">
                                     <h4 class="mb-15 text-brand">Shop</h4>
-                                    205 North Michigan Avenue, Suite 810<br />
-                                    Chicago, 60601, USA<br />
-                                    <abbr title="Phone">Phone:</abbr> (123) 456-7890<br />
-                                    <abbr title="Email">Email: </abbr><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2f4c40415b4e4c5b6f6a594e5d4e014c4042">[email&#160;protected]</a><br />
+                                    No. 12, Street 271<br />
+                                    Sangkat Toul Tum Poung 1, Khan Chamkarmon<br />
+                                    Phnom Penh 120306, Cambodia<br />
+                                    <abbr title="Phone">Phone:</abbr> 061756481<br />
+                                    <abbr title="Email">Email: </abbr><a href="mailto:daraeng054@gmail.com">daraeng054@gmail.com</a><br />
                                     <a class="btn btn-sm font-weight-bold text-white mt-20 border-radius-5 btn-shadow-brand hover-up"><i class="fi-rs-marker mr-5"></i>View map</a>
                                 </div>
                             </div>
@@ -120,9 +123,6 @@
                                         </form>
                                         <p class="form-messege"></p>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 pl-50 d-lg-block d-none">
-                                    <img class="border-radius-15 mt-50" src="{% static 'assets/imgs/page/contact-2.png' %}" alt="" />
                                 </div>
                             </div>
                         </section>

@@ -1,0 +1,149 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+    <main class="main">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <span></span> Shop <span></span> Checkout <span></span> KHQR
+                </div>
+            </div>
+        </div>
+        <div class="container mb-80 mt-50">
+            <div class="row">
+                <div class="col-lg-8 mb-40">
+                    <h1 class="heading-2 mb-10">Pay with KHQR</h1>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="text-body">Order <span class="text-brand">#{{ order.oid }}</span></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-7 mb-40">
+                    <div class="card" style="max-width: 420px; margin: 0 auto; overflow: hidden;">
+                        <div class="text-center" style="background-color: #e21836; padding: 18px;">
+                            <h4 class="mb-0 text-white" style="letter-spacing: 4px;">KHQR</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="mb-1">{{ khqr_merchant_name }}</h5>
+                            <p class="fs-sm text-muted mb-20">{{ khqr_bank_name }}</p>
+
+                            <div class="border-bottom mb-20 pb-20">
+                                <p class="fs-sm text-muted mb-1">Amount to transfer</p>
+                                <h2 class="text-brand mb-0">${{ order.price }}</h2>
+                            </div>
+
+                            {% if khqr_image_found %}
+                            <img src="{% static khqr_image %}" alt="KHQR code for {{ khqr_merchant_name }}" style="width: 100%; max-width: 280px; height: auto;" />
+                            {% else %}
+                            <div class="border rounded p-4" style="border-style: dashed !important;">
+                                <p class="fs-sm text-danger mb-1"><b>QR image not found</b></p>
+                                <p class="fs-xs text-muted mb-0">Save your KHQR image to <code>static/{{ khqr_image }}</code></p>
+                            </div>
+                            {% endif %}
+
+                            <p class="fs-sm text-muted mt-20 mb-0">Scan to pay with any KHQR-supported mobile app.</p>
+
+                            {% if khqr_pay_link %}
+                            <a href="{{ khqr_pay_link }}" target="_blank" rel="noopener" class="btn btn-sm w-100 mt-20" style="background-color: #e21836;">
+                                <i class="fi-rs-smartphone mr-5"></i>Open in {{ khqr_bank_name }} app
+                            </a>
+                            <p class="fs-xs text-muted mt-10 mb-0">On a phone? Tap this instead of scanning.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="border rounded p-4 mt-30">
+                        <h5 class="mb-20">How to pay</h5>
+                        <ol class="pl-20 mb-0">
+                            <li class="mb-10">Open your banking app and scan the QR above.</li>
+                            <li class="mb-10">Type the amount <strong class="text-brand">${{ order.price }}</strong> yourself &mdash; this QR does not fill it in for you.</li>
+                            <li class="mb-10">Complete the transfer, then copy the <strong>transaction ID</strong> from your receipt.</li>
+                            <li class="mb-0">Paste it into the form and submit.</li>
+                        </ol>
+                    </div>
+
+                    <div class="border rounded p-4 mt-20" style="background-color: #fff8e6; border-color: #f0d48a !important;">
+                        <p class="mb-0 fs-sm">
+                            <i class="fi-rs-info mr-5"></i>
+                            The same QR is used for every order, so your payment cannot be matched automatically.
+                            Your order is confirmed once we check the transaction ID against our bank statement.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="border cart-totals mb-30">
+                        <div class="d-flex align-items-end justify-content-between mb-30">
+                            <h4>Order Summary</h4>
+                        </div>
+
+                        {% for o in order_items %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="fs-sm">{{ o.item }} &times; {{ o.qty }}</p>
+                            <p class="fs-sm">${{ o.total }}</p>
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-flex justify-content-between mb-2 border-top pt-20">
+                            <p class="fw-bold">Discount</p>
+                            <p>${{ order.saved }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="fw-bold">Total</p>
+                            <p class="text-brand fw-bold">${{ order.price }}</p>
+                        </div>
+                    </div>
+
+                    <div class="border cart-totals">
+                        <div class="d-flex align-items-end justify-content-between mb-20">
+                            <h4>Confirm your payment</h4>
+                        </div>
+
+                        {% if order.khqr_status == "rejected" %}
+                        <div class="border rounded p-3 mb-20" style="background-color: #fdeaea; border-color: #f5b5b5 !important;">
+                            <p class="mb-0 fs-sm text-danger">
+                                Your last submission could not be verified. Please check the transaction ID and try again.
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <form method="POST" enctype="multipart/form-data" class="contact-form-style">
+                            {% csrf_token %}
+
+                            <div class="input-style mb-20">
+                                <label class="fs-sm fw-bold mb-5" for="id_khqr_reference">Transaction ID</label>
+                                {{ form.khqr_reference }}
+                                {% for error in form.khqr_reference.errors %}
+                                <p class="fs-xs text-danger mt-5 mb-0">{{ error }}</p>
+                                {% endfor %}
+                                <p class="fs-xs text-muted mt-5 mb-0">Found on your transfer receipt in the banking app.</p>
+                            </div>
+
+                            <div class="mb-20">
+                                <label class="fs-sm fw-bold mb-5" for="id_khqr_proof">Payment screenshot <span class="text-muted fw-normal">(optional)</span></label>
+                                {{ form.khqr_proof }}
+                                {% for error in form.khqr_proof.errors %}
+                                <p class="fs-xs text-danger mt-5 mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="textarea-style mb-20">
+                                <label class="fs-sm fw-bold mb-5" for="id_khqr_note">Note <span class="text-muted fw-normal">(optional)</span></label>
+                                {{ form.khqr_note }}
+                            </div>
+
+                            <button type="submit" class="btn w-100">I have paid &mdash; submit</button>
+                        </form>
+
+                        <a href="{% url 'core:checkout' order.oid %}" class="fs-sm d-block text-center mt-20">Choose a different payment method</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock content %}

@@ -1,0 +1,60 @@
+{% load static %}
+<div class="col-lg-3 primary-sidebar sticky-sidebar">
+    <div class="sidebar-widget widget_search mb-50">
+        <div class="search-form">
+            <form action="{% url 'blog:post-list' %}" method="GET">
+                <input type="text" name="q" placeholder="Search posts&hellip;" value="{{ query }}" />
+                <button type="submit"><i class="fi-rs-search"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="sidebar-widget widget-category-2 mb-30">
+        <h5 class="section-title style-1 mb-30">Categories</h5>
+        <ul>
+            {% for c in blog_categories %}
+            <li>
+                <a href="{% url 'blog:category-post-list' c.cid %}">
+                    {% if c.image %}
+                    <img src="{{ c.image.url }}" alt="{{ c.title }}" style="width: 30px; height: 30px; object-fit: cover; border-radius: 10px;" />
+                    {% endif %}
+                    {{ c.title }}</a><span class="count">{{ c.post_count }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="sidebar-widget product-sidebar mb-30 p-30 bg-grey border-radius-10">
+        <h5 class="section-title style-1 mb-30">Recent Posts</h5>
+        {% for p in recent_posts %}
+        <div class="single-post clearfix">
+            <div class="image">
+                {% if p.image %}
+                <img src="{{ p.image.url }}" alt="{{ p.title }}" style="width: 65px; height: 65px; object-fit: cover;" />
+                {% else %}
+                <img src="{% static 'assets/imgs/blog/header-bg.png' %}" alt="{{ p.title }}" style="width: 65px; height: 65px; object-fit: cover;" />
+                {% endif %}
+            </div>
+            <div class="content pt-10">
+                <h6><a href="{{ p.get_absolute_url }}">{{ p.title|truncatewords:6 }}</a></h6>
+                <p class="post-exerpt font-xs color-grey mb-0 mt-5">{{ p.date|date:"d M Y" }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="font-small color-grey mb-0">Nothing published yet.</p>
+        {% endfor %}
+    </div>
+
+    <div class="banner-img wow fadeIn mb-40 animated d-lg-block d-none">
+        <img src="{% static 'assets/imgs/banner/banner-11.png' %}" alt="" />
+        <div class="banner-text">
+            <span>Fresh</span>
+            <h4>
+                Save 17% <br />
+                on <span class="text-brand">Organic</span><br />
+                produce
+            </h4>
+            <a href="{% url 'core:product-list' %}" class="btn btn-xs">Shop Now <i class="fi-rs-arrow-small-right"></i></a>
+        </div>
+    </div>
+</div>

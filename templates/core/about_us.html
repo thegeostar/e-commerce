@@ -5,7 +5,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                     <span></span> Pages <span></span> About us
                 </div>
             </div>
@@ -21,8 +21,8 @@
                             <div class="col-lg-6">
                                 <div class="pl-25">
                                     <h2 class="mb-30">Welcome to E-commerce</h2>
-                                    <p class="mb-25">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate id est laborum.</p>
-                                    <p class="mb-50">Ius ferri velit sanctus cu, sed at soleat accusata. Dictas prompta et Ut placerat legendos interpre.Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante Etiam sit amet orci eget. Quis commodo odio aenean sed adipiscing. Turpis massa tincidunt dui ut ornare lectus. Auctor elit sed vulputate mi sit amet. Commodo consequat. Duis aute irure dolor in reprehenderit in voluptate id est laborum.</p>
+                                    <p class="mb-25">E-commerce is an online marketplace based in Phnom Penh. We bring together local vendors &mdash; market traders, family farms and neighbourhood shops &mdash; on one site, so you can order fresh produce and everyday groceries from all of them in a single basket.</p>
+                                    <p class="mb-50">Order before noon and we deliver the same day across Phnom Penh; elsewhere in Cambodia our courier partners usually reach you within two days. Every vendor on the site is verified before their first listing goes live, and you can see their rating and response time on their store page.</p>
                                     <div class="carausel-3-columns-cover position-relative">
                                         <div id="carausel-3-columns-arrows"></div>
                                         <div class="carausel-3-columns" id="carausel-3-columns">
@@ -41,8 +41,8 @@
                                 <div class="col-lg-4 col-md-6 mb-24">
                                     <div class="featured-card">
                                         <img src="{% static 'assets/imgs/theme/icons/icon-1.svg' %}" alt="" />
-                                        <h4>Best Prices & Offers</h4>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</p>
+                                        <h4>Best Prices &amp; Offers</h4>
+                                        <p>Buying direct from local vendors keeps prices close to market rates, and coupons at checkout bring them lower still.</p>
                                         <a href="#">Read more</a>
                                     </div>
                                 </div>
@@ -50,7 +50,7 @@
                                     <div class="featured-card">
                                         <img src="{% static 'assets/imgs/theme/icons/icon-2.svg' %}" alt="" />
                                         <h4>Wide Assortment</h4>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</p>
+                                        <p>Fresh produce, meat and fish, rice and dry goods, drinks and household basics &mdash; from dozens of vendors, all in one order.</p>
                                         <a href="#">Read more</a>
                                     </div>
                                 </div>
@@ -58,7 +58,7 @@
                                     <div class="featured-card">
                                         <img src="{% static 'assets/imgs/theme/icons/icon-3.svg' %}" alt="" />
                                         <h4>Free Delivery</h4>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</p>
+                                        <p>Delivery is free anywhere in Phnom Penh on orders over $20. Same-day if you order before noon.</p>
                                         <a href="#">Read more</a>
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                                     <div class="featured-card">
                                         <img src="{% static 'assets/imgs/theme/icons/icon-4.svg' %}" alt="" />
                                         <h4>Easy Returns</h4>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</p>
+                                        <p>If something arrives damaged or is not what you ordered, tell us within 24 hours and we will replace or refund it.</p>
                                         <a href="#">Read more</a>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                                     <div class="featured-card">
                                         <img src="{% static 'assets/imgs/theme/icons/icon-5.svg' %}" alt="" />
                                         <h4>100% Satisfaction</h4>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</p>
+                                        <p>Every vendor is verified before listing, and honest reviews from real buyers keep quality where it should be.</p>
                                         <a href="#">Read more</a>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                                     <div class="featured-card">
                                         <img src="{% static 'assets/imgs/theme/icons/icon-6.svg' %}" alt="" />
                                         <h4>Great Daily Deal</h4>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</p>
+                                        <p>New offers every morning on seasonal produce, with a countdown so you know exactly how long they last.</p>
                                         <a href="#">Read more</a>
                                     </div>
                                 </div>
@@ -96,22 +96,22 @@
                                 <div class="col-lg-5">
                                     <h4 class="mb-20 text-muted">Our performance</h4>
                                     <h1 class="heading-1 mb-40">Your Partner for e-commerce grocery solution</h1>
-                                    <p class="mb-30">Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto</p>
-                                    <p>Pitatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia</p>
+                                    <p class="mb-30">We handle the parts that are hard for a small vendor to do alone: the storefront, the search, the payments and the delivery. The vendor keeps doing what they are good at &mdash; sourcing and selling.</p>
+                                    <p>That means a shop can be online in an afternoon, with no website to build and no payment gateway to set up.</p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-4 pr-30 mb-md-5 mb-lg-0 mb-sm-5">
                                     <h3 class="mb-30">Who we are</h3>
-                                    <p>Volutpat diam ut venenatis tellus in metus. Nec dui nunc mattis enim ut tellus eros donec ac odio orci ultrices in. ellus eros donec ac odio orci ultrices in.</p>
+                                    <p>A small team based in Phnom Penh, working with vendors across the city's markets and with farms in the surrounding provinces.</p>
                                 </div>
                                 <div class="col-lg-4 pr-30 mb-md-5 mb-lg-0 mb-sm-5">
                                     <h3 class="mb-30">Our history</h3>
-                                    <p>Volutpat diam ut venenatis tellus in metus. Nec dui nunc mattis enim ut tellus eros donec ac odio orci ultrices in. ellus eros donec ac odio orci ultrices in.</p>
+                                    <p>The site began as a coursework project at the Royal University of Phnom Penh and grew into a working marketplace for local vendors.</p>
                                 </div>
                                 <div class="col-lg-4">
                                     <h3 class="mb-30">Our mission</h3>
-                                    <p>Volutpat diam ut venenatis tellus in metus. Nec dui nunc mattis enim ut tellus eros donec ac odio orci ultrices in. ellus eros donec ac odio orci ultrices in.</p>
+                                    <p>To give small Cambodian sellers a fair route online, and to make ordering good food as simple as it should be.</p>
                                 </div>
                             </div>
                         </section>

@@ -5,7 +5,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                     <span></span> Pages <span></span> My Account
                 </div>
             </div>
@@ -23,7 +23,7 @@
                                         </li>
                                         
                                         <li class="nav-item">
-                                            <a class="nav-link" href="page-login.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                            <a class="nav-link" href="{% url 'userauths:sign-out' %}"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -45,7 +45,7 @@
                                                     {% if profile.image %}
                                                     <span><img src="{{ profile.image.url }}" style="width: 150px; object-fit: cover; border-radius:50%; height:150px;" alt=""></span>
                                                     {% else %}
-                                                    <span><img src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg" style="width: 150px; object-fit: cover; border-radius:50%; height:150px;" alt=""></span>
+                                                    <span><img src="{% static 'assets/imgs/theme/default-avatar.svg' %}" style="width: 150px; object-fit: cover; border-radius:50%; height:150px;" alt=""></span>
 
                                                     {% endif %}
                                                 </div>

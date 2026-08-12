@@ -26,13 +26,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%o9!c3rf02q6usr!vw^s96^t*(dsv&ezbs)_u_k7^z1oa$ik0r'
+SECRET_KEY = env.str(
+    "SECRET_KEY",
+    default='django-insecure-%o9!c3rf02q6usr!vw^s96^t*(dsv&ezbs)_u_k7^z1oa$ik0r',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://development-server.up.railway.app']
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+
+# Hosts allowed to POST (login, checkout, admin). Django requires the full
+# scheme. Set CSRF_TRUSTED_ORIGINS in the environment on the deployed host,
+# e.g. CSRF_TRUSTED_ORIGINS=https://yourname.pythonanywhere.com
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=["http://127.0.0.1:8000", "http://localhost:8000"],
+)
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
 
 
@@ -50,13 +60,16 @@ INSTALLED_APPS = [
 
     # Third Party
     'taggit',
+    'crispy_forms',
     'crispy_bootstrap5',
     'django_ckeditor_5',
-    'paypal.standard.ipn',
 
     # Custom Apps
     'core',
     'userauths',
+    'useradmin',
+    'blog',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -377,9 +390,10 @@ CKEDITOR_5_CONFIGS = {
     },
 }
 
-STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
-STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
-
-
-PAYPAL_RECEIVER_EMAIL = 'businessdestiny@gmail.com'
-PAYPAL_TEST = True
+# KHQR (ACLEDA Bank) — one static QR is shown for every order, so payments
+# cannot be matched automatically. The buyer submits their transaction ID and
+# the shop owner approves it from the seller dashboard.
+KHQR_MERCHANT_NAME = env("KHQR_MERCHANT_NAME", default="ENG DARAROTH")
+KHQR_BANK_NAME = env("KHQR_BANK_NAME", default="ACLEDA Bank")
+KHQR_IMAGE = env("KHQR_IMAGE", default="assets/imgs/khqr/khqr-acleda.png")
+KHQR_PAY_LINK = env("KHQR_PAY_LINK", default="")

@@ -20,6 +20,20 @@
                     </div>
                 </div>
             </div>
+
+            {% if not cart_data %}
+            <div class="row">
+                <div class="col-lg-8 m-auto text-center">
+                    <div class="border rounded p-5">
+                        <i class="fi-rs-shopping-cart" style="font-size: 48px; color: #bdbdbd;"></i>
+                        <h4 class="mt-20 mb-10">Your cart is empty</h4>
+                        <p class="mb-30 text-muted">Browse the shop and add something you like.</p>
+                        <a href="{% url 'core:product-list' %}" class="btn"><i class="fi-rs-shopping-bag mr-5"></i>Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+
             <form action="{% url 'core:save_checkout_info' %}" method="POST">
                 {% csrf_token %}
                 <div class="row">
@@ -126,12 +140,30 @@
                                 </div>
                             </div>
                             {% if totalcartitems %}
-                                <button type=submit" class="btn mb-20 w-100">Proceed To CheckOut<i class="fi-rs-sign-out ml-15"></i></button>
-                            {% endif %}                    
+                                <button type="submit" class="btn mb-20 w-100" data-checkout-submit>Proceed To CheckOut<i class="fi-rs-sign-out ml-15"></i></button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </form>
+            {% endif %}
         </div>
     </main>
+
+    {% comment %}
+    Checkout is not instant on a slow connection, and an impatient second click
+    would post the form twice. The server reuses the pending order either way;
+    this just keeps the button honest about what it is doing.
+    {% endcomment %}
+    <script>
+        document.addEventListener("submit", function (event) {
+            var button = event.target.querySelector("[data-checkout-submit]");
+            if (!button || button.disabled) {
+                return;
+            }
+            button.disabled = true;
+            button.style.opacity = "0.7";
+            button.textContent = "Processing...";
+        });
+    </script>
 {% endblock content %}

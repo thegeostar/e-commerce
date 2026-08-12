@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 44" role="img" aria-label="Shop assistant">
+  <title>Shop assistant</title>
+  <!-- Side stubs -->
+  <path d="M4 17h7M37 17h7" fill="none" stroke="#22314F" stroke-width="4"
+        stroke-linecap="butt"/>
+  <!-- Speech bubble with the tail pointing down-left -->
+  <path d="M11 6h26v25h-8l-9 6v-6h-9z" fill="#A7AFC0" stroke="#22314F"
+        stroke-width="4" stroke-linejoin="miter"/>
+  <!-- Screen -->
+  <rect x="17" y="12" width="14" height="11" fill="#22314F"/>
+  <!-- Eyes -->
+  <circle cx="21" cy="17.5" r="2.2" fill="#fff"/>
+  <circle cx="27" cy="17.5" r="2.2" fill="#fff"/>
+</svg>

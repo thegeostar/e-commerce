@@ -6,7 +6,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                     <span></span> Pages <span></span> My Account
                 </div>
             </div>
@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class="col-xl-8 col-lg-10 col-md-12 m-auto">
                         <div class="row">
-                            <div class="col-lg-6 col-md-8">
+                            <div class="col-lg-8 col-md-10 m-auto">
                                 <div class="login_wrap widget-taber-content background-white">
                                     <div class="padding_eight_all bg-white">
 
@@ -86,7 +86,7 @@
                                                         <label class="form-check-label" for="exampleCheckbox12"><span>I agree to terms &amp; Policy.</span></label>
                                                     </div>
                                                 </div>
-                                                <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Lean more</a>
+                                                <a href="{% url 'core:privacy_policy' %}"><i class="fi-rs-book-alt mr-5 text-muted"></i>Lean more</a>
                                             </div> -->
                                             <div class="form-group mb-30">
                                                 <button type="submit" class="btn btn-fill-out btn-block hover-up font-weight-bold" name="login">Submit &amp; Register</button>
@@ -96,21 +96,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 pr-30 d-none d-lg-block">
-                                <div class="card-login mt-115">
-                                    <a href="#" class="social-login facebook-login">
-                                        <img src="{% static 'assets/imgs/theme/icons/logo-facebook.svg' %}" alt="" />
-                                        <span>Continue with Facebook</span>
-                                    </a>
-                                    <a href="#" class="social-login google-login">
-                                        <img src="{% static 'assets/imgs/theme/icons/logo-google.svg' %}" alt="" />
-                                        <span>Continue with Google</span>
-                                    </a>
-                                    <a href="#" class="social-login apple-login">
-                                        <img src="{% static 'assets/imgs/theme/icons/logo-apple.svg' %}" alt="" />
-                                        <span>Continue with Apple</span>
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     </div>

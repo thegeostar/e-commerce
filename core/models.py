@@ -22,6 +22,20 @@ STATUS = (
 )
 
 
+PAYMENT_METHOD = (
+    ("khqr", "KHQR"),
+    ("cod", "Cash on Delivery"),
+)
+
+
+KHQR_STATUS = (
+    ("none", "Not Submitted"),
+    ("pending", "Pending Verification"),
+    ("approved", "Approved"),
+    ("rejected", "Rejected"),
+)
+
+
 RATING = (
     (1,  "★☆☆☆☆"),
     (2,  "★★☆☆☆"),
@@ -54,10 +68,6 @@ class Category(models.Model):
         return self.title
 
 
-class Tags(models.Model):
-    pass
-
-
 class Vendor(models.Model):
     vid = ShortUUIDField(unique=True, length=10, max_length=20,
                          prefix="ven", alphabet="abcdefgh12345")
@@ -67,11 +77,11 @@ class Vendor(models.Model):
         upload_to=user_directory_path, default="vendor.jpg")
     cover_image = models.ImageField(
         upload_to=user_directory_path, default="vendor.jpg")
-    # description = models.TextField(null=True, blank=True, default="I am am Amazing Vendor")
     description = CKEditor5Field(config_name='extends', null=True, blank=True)
 
-    address = models.CharField(max_length=100, default="123 Main Street.")
-    contact = models.CharField(max_length=100, default="+123 (456) 789")
+    address = models.CharField(
+        max_length=100, default="Street 271, Khan Chamkarmon, Phnom Penh")
+    contact = models.CharField(max_length=100, default="061756481")
     chat_resp_time = models.CharField(max_length=100, default="100")
     shipping_on_time = models.CharField(max_length=100, default="100")
     authentic_rating = models.CharField(max_length=100, default="100")
@@ -104,7 +114,6 @@ class Product(models.Model):
     title = models.CharField(max_length=100, default="Fresh Pear")
     image = models.ImageField(
         upload_to=user_directory_path, default="product.jpg")
-    # description = models.TextField(null=True, blank=True, default="This is the product")
     description = CKEditor5Field(config_name='extends', null=True, blank=True)
 
     price = models.DecimalField(
@@ -113,7 +122,6 @@ class Product(models.Model):
         max_digits=12, decimal_places=2, default="2.99")
 
     specifications = CKEditor5Field(config_name='extends', null=True, blank=True)
-    # specifications = models.TextField(null=True, blank=True)
     type = models.CharField(
         max_length=100, default="Organic", null=True, blank=True)
     stock_count = models.CharField(
@@ -124,7 +132,6 @@ class Product(models.Model):
 
     tags = TaggableManager(blank=True)
 
-    # tags = models.ForeignKey(Tags, on_delete=models.SET_NULL, null=True)
 
     product_status = models.CharField(
         choices=STATUS, max_length=10, default="in_review")
@@ -150,8 +157,17 @@ class Product(models.Model):
         return self.title
 
     def get_precentage(self):
-        new_price = (self.price / self.old_price) * 100
-        return new_price
+        """Discount off the old price, as a percentage.
+
+        Templates render this as "-{{ p.get_precentage }}% Off", so it has to
+        be the amount saved. The old formula returned price/old_price*100,
+        which showed a 25% discount as "-75% Off".
+        """
+        if not self.old_price or not self.price:
+            return 0
+        if self.price >= self.old_price:
+            return 0
+        return (1 - (self.price / self.old_price)) * 100
 
 
 class ProductImages(models.Model):
@@ -165,10 +181,6 @@ class ProductImages(models.Model):
         verbose_name_plural = "Product Images"
 
 
-############################################## Cart, Order, OrderITems and Address ##################################
-############################################## Cart, Order, OrderITems and Address ##################################
-############################################## Cart, Order, OrderITems and Address ##################################
-############################################## Cart, Order, OrderITems and Address ##################################
 
 
 class CartOrder(models.Model):
@@ -196,11 +208,22 @@ class CartOrder(models.Model):
     product_status = models.CharField(choices=STATUS_CHOICE, max_length=30, default="processing")
     sku = ShortUUIDField(null=True, blank=True, length=5,prefix="SKU", max_length=20, alphabet="1234567890")
     oid = ShortUUIDField(null=True, blank=True, length=8, max_length=20, alphabet="1234567890")
-    stripe_payment_intent = models.CharField(max_length=1000, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    
+
+    payment_method = models.CharField(choices=PAYMENT_METHOD, max_length=20, null=True, blank=True)
+    khqr_status = models.CharField(choices=KHQR_STATUS, max_length=20, default="none")
+    khqr_reference = models.CharField(max_length=100, null=True, blank=True)
+    khqr_proof = models.ImageField(upload_to="khqr-proof", null=True, blank=True)
+    khqr_submitted_at = models.DateTimeField(null=True, blank=True)
+    khqr_note = models.TextField(null=True, blank=True)
+
     class Meta:
         verbose_name_plural = "Cart Order"
+
+    def khqr_proof_image(self):
+        if self.khqr_proof:
+            return mark_safe('<img src="%s" width="60" height="60" style="object-fit: cover;" />' % (self.khqr_proof.url))
+        return "-"
 
 
 class CartOrderProducts(models.Model):
@@ -217,13 +240,14 @@ class CartOrderProducts(models.Model):
         verbose_name_plural = "Cart Order Items"
 
     def order_img(self):
-        return mark_safe('<img src="/media/%s" width="50" height="50" />' % (self.image))
+        # `image` already holds a full media URL ("/media/user_1/x.jpg"),
+        # copied from the product when the cart line was created. Prefixing
+        # "/media/" again produced "/media//media/..." and a broken image.
+        if not self.image:
+            return "-"
+        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image))
 
 
-############################################## Product Revew, wishlists, Address ##################################
-############################################## Product Revew, wishlists, Address ##################################
-############################################## Product Revew, wishlists, Address ##################################
-############################################## Product Revew, wishlists, Address ##################################
 
 
 class ProductReview(models.Model):

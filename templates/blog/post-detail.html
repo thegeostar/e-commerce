@@ -1,0 +1,94 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                <span></span> <a href="{% url 'blog:post-list' %}">Blog</a>
+                {% if post.category %}
+                <span></span> <a href="{% url 'blog:category-post-list' post.category.cid %}">{{ post.category.title }}</a>
+                {% endif %}
+                <span></span> {{ post.title }}
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="single-page pr-30">
+                        <div class="single-header mb-30">
+                            {% if post.category %}
+                            <h6 class="mb-10">
+                                <a class="text-brand" href="{% url 'blog:category-post-list' post.category.cid %}">{{ post.category.title }}</a>
+                            </h6>
+                            {% endif %}
+                            <h2 class="mb-30">{{ post.title }}</h2>
+                            <div class="single-header-meta">
+                                <div class="entry-meta meta-1 font-xs color-grey mt-10 pb-10">
+                                    <span class="post-by mr-20">By {{ post.user.username|default:"E-commerce" }}</span>
+                                    <span class="post-on mr-20"><i class="fi-rs-calendar mr-5"></i>{{ post.date|date:"d M Y" }}</span>
+                                    <span class="hit-count"><i class="fi-rs-eye mr-5"></i>{{ post.views }} view{{ post.views|pluralize }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if post.image %}
+                        <figure class="single-thumbnail mb-30">
+                            <img class="border-radius-15" style="width: 100%; max-height: 450px; object-fit: cover;" src="{{ post.image.url }}" alt="{{ post.title }}" />
+                        </figure>
+                        {% endif %}
+
+                        <div class="single-content mb-50">
+                            {% if post.description %}
+                            <p class="lead mb-30">{{ post.description }}</p>
+                            {% endif %}
+                            <div class="entry-content">
+                                {{ post.content|safe }}
+                            </div>
+                        </div>
+
+                        {% if related_posts %}
+                        <div class="related-posts mb-50">
+                            <h4 class="section-title style-1 mb-30">Related posts</h4>
+                            <div class="loop-grid">
+                                <div class="row">
+                                    {% for p in related_posts %}
+                                    <article class="col-xl-4 col-lg-6 col-md-6 hover-up mb-30 animated">
+                                        <div class="post-thumb">
+                                            <a href="{{ p.get_absolute_url }}">
+                                                {% if p.image %}
+                                                <img class="border-radius-15" style="height: 180px; width: 100%; object-fit: cover;" src="{{ p.image.url }}" alt="{{ p.title }}" />
+                                                {% else %}
+                                                <img class="border-radius-15" style="height: 180px; width: 100%; object-fit: cover;" src="{% static 'assets/imgs/blog/header-bg.png' %}" alt="{{ p.title }}" />
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                        <div class="entry-content-2">
+                                            <h5 class="post-title mt-15 mb-10">
+                                                <a href="{{ p.get_absolute_url }}">{{ p.title }}</a>
+                                            </h5>
+                                            <div class="entry-meta font-xs color-grey">
+                                                <span><i class="fi-rs-calendar mr-5"></i>{{ p.date|date:"d M Y" }}</span>
+                                            </div>
+                                        </div>
+                                    </article>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <a href="{% url 'blog:post-list' %}" class="btn btn-sm"><i class="fi-rs-arrow-small-left mr-5"></i>Back to blog</a>
+                    </div>
+                </div>
+
+                {% include "blog/partials/sidebar.html" %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock content %}

@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 
 
-from core.models import CartOrder, CartOrderProducts, Product, Category, ProductReview
+from core.models import CartOrder, CartOrderProducts, Product, Category, ProductReview, STATUS_CHOICE
 from userauths.models import Profile, User
 from useradmin.forms import AddProductForm
 from useradmin.decorators import admin_required
@@ -68,7 +69,7 @@ def add_product(request):
 
 @admin_required
 def edit_product(request, pid):
-    product = Product.objects.get(pid=pid)
+    product = get_object_or_404(Product, pid=pid)
 
     if request.method == "POST":
         form = AddProductForm(request.POST, request.FILES, instance=product)
@@ -86,9 +87,11 @@ def edit_product(request, pid):
     return render(request, "useradmin/edit-products.html", context)
 
 @admin_required
+@require_POST
 def delete_product(request, pid):
-    product = Product.objects.get(pid=pid)
+    product = get_object_or_404(Product, pid=pid)
     product.delete()
+    messages.success(request, "Product deleted.")
     return redirect("useradmin:dashboard-products")
 
 @admin_required
@@ -101,7 +104,7 @@ def orders(request):
 
 @admin_required
 def order_detail(request, id):
-    order = CartOrder.objects.get(id=id)
+    order = get_object_or_404(CartOrder, id=id)
     order_items = CartOrderProducts.objects.filter(order=order)
     context = {
         'order':order,
@@ -110,16 +113,60 @@ def order_detail(request, id):
     return render(request, "useradmin/order_detail.html", context)
 
 @admin_required
-@csrf_exempt
+@require_POST
 def change_order_status(request, oid):
-    order = CartOrder.objects.get(oid=oid)
-    if request.method == "POST":
-        status = request.POST.get("status")
-        print("status =======", status)
-        messages.success(request, f"Order status changed to {status}")
+    order = get_object_or_404(CartOrder, oid=oid)
+    status = request.POST.get("status")
+
+    valid_statuses = [choice[0] for choice in STATUS_CHOICE]
+    if status in valid_statuses:
         order.product_status = status
         order.save()
-    
+        messages.success(request, f"Order status changed to {status}")
+    else:
+        messages.error(request, "Please choose a valid order status.")
+
+    return redirect("useradmin:order_detail", order.id)
+
+@admin_required
+@require_POST
+def verify_khqr_payment(request, oid):
+    """
+    KHQR transfers land in the bank account with no order reference, so the
+    shop owner checks the buyer's transaction ID against the bank statement
+    and approves it here. This is the only place a KHQR order becomes paid.
+    """
+    order = get_object_or_404(CartOrder, oid=oid)
+    action = request.POST.get("action")
+
+    if action == "approve":
+        order.khqr_status = "approved"
+        order.paid_status = True
+        order.save()
+        messages.success(request, f"KHQR payment approved. Order #{order.oid} is now marked as paid.")
+    elif action == "reject":
+        order.khqr_status = "rejected"
+        order.paid_status = False
+        order.save()
+        messages.warning(request, f"KHQR payment rejected. The buyer can submit a new transaction ID.")
+    else:
+        messages.error(request, "Please choose approve or reject.")
+
+    return redirect("useradmin:order_detail", order.id)
+
+@admin_required
+@require_POST
+def confirm_cod_payment(request, oid):
+    """Mark a cash-on-delivery order paid once the courier hands over the money."""
+    order = get_object_or_404(CartOrder, oid=oid)
+
+    if order.payment_method != "cod":
+        messages.error(request, "This order was not placed as cash on delivery.")
+    else:
+        order.paid_status = True
+        order.save()
+        messages.success(request, f"Cash collected. Order #{order.oid} is now marked as paid.")
+
     return redirect("useradmin:order_detail", order.id)
 
 @admin_required
@@ -145,7 +192,7 @@ def reviews(request):
 
 @admin_required
 def settings(request):
-    profile = Profile.objects.get(user=request.user)
+    profile, _ = Profile.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
         image = request.FILES.get("image")
@@ -154,8 +201,7 @@ def settings(request):
         bio = request.POST.get("bio")
         address = request.POST.get("address")
         country = request.POST.get("country")
-        print("image ===========", image)
-        
+
         if image != None:
             profile.image = image
         profile.full_name = full_name
@@ -189,6 +235,7 @@ def change_password(request):
         if check_password(old_password, user.password):
             user.set_password(new_password)
             user.save()
+            update_session_auth_hash(request, user)
             messages.success(request, "Password Changed Successfully")
             return redirect("useradmin:change_password")
         else:

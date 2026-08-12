@@ -1,0 +1,50 @@
+{% load static %}
+{% comment %}
+Shop assistant. Included once from the site base template, so it is on every
+customer-facing page. The csrf_token below is what the fetch() call signs its
+POST with.
+{% endcomment %}
+<div id="shopbot" class="shopbot"
+     data-ask-url="{% url 'chatbot:ask' %}"
+     data-welcome-url="{% url 'chatbot:welcome' %}">
+
+    {% csrf_token %}
+
+    <div class="shopbot-panel" role="dialog" aria-label="Shop assistant">
+        <div class="shopbot-header">
+            <span class="shopbot-avatar" aria-hidden="true">
+                <img src="{% static 'assets/imgs/chatbot/bot-avatar.svg' %}" alt="">
+            </span>
+            <div>
+                <h6>Shop Assistant</h6>
+                <span>Ask me about products, prices &amp; delivery</span>
+            </div>
+            <button type="button" class="shopbot-minimise" data-shopbot-minimise
+                    aria-label="Close chat">&times;</button>
+        </div>
+
+        <div class="shopbot-log" data-shopbot-log aria-live="polite"></div>
+
+        <div class="shopbot-chips" data-shopbot-chips></div>
+
+        <form class="shopbot-form" data-shopbot-form autocomplete="off">
+            <input type="text" class="shopbot-input" data-shopbot-input
+                   placeholder="Ask me anything about the shop..."
+                   aria-label="Your message" maxlength="400">
+            <button type="submit" class="shopbot-send" data-shopbot-send
+                    aria-label="Send message">
+                <img src="{% static 'assets/imgs/chatbot/send.png' %}" alt="Send">
+            </button>
+        </form>
+    </div>
+
+    <button type="button" class="shopbot-launcher" data-shopbot-launcher
+            aria-label="Open the shop assistant">
+        <svg class="shopbot-open-icon" viewBox="0 0 24 24"><path d="M12 3c5 0 9 3.4 9 7.6 0 4.2-4 7.6-9 7.6-.9 0-1.8-.1-2.6-.3L4 21l1.3-3.6C3.3 16 2 13.5 2 10.6 2 6.4 6 3 12 3Zm-4 6.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm4 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm4 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"/></svg>
+        <svg class="shopbot-close-icon" viewBox="0 0 24 24"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>
+        <span class="shopbot-dot"></span>
+    </button>
+</div>
+
+<link rel="stylesheet" href="{% static 'assets/css/chatbot.css' %}">
+<script src="{% static 'assets/js/chatbot.js' %}" defer></script>

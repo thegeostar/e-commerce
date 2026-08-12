@@ -1,0 +1,462 @@
+/* Shop assistant widget.
+ *
+ * Every rule is scoped under `.shopbot`, and that is not only tidiness — it is
+ * load-bearing. The theme's main.css styles bare elements, e.g.
+ *
+ *     button[type='submit'] { padding: 15px 40px; border-radius: 10px; }
+ *
+ * which has higher specificity (0-1-1) than a single class (0-1-0) and was
+ * squashing the send button's icon to zero width. Two classes (0-2-0) beat it.
+ * Keep the `.shopbot` prefix on every selector for that reason.
+ */
+
+.shopbot {
+    --shopbot-brand: #3BB77E;
+    --shopbot-brand-dark: #29a06a;
+    --shopbot-ink: #253D4E;
+    --shopbot-muted: #7E7E7E;
+    --shopbot-line: #ECECEC;
+    font-family: "Quicksand", sans-serif;
+}
+
+/* Shared reset for the widget's buttons, so no theme rule leaks in. */
+.shopbot .shopbot-launcher,
+.shopbot .shopbot-minimise,
+.shopbot .shopbot-send,
+.shopbot .shopbot-chip {
+    margin: 0;
+    font-family: inherit;
+    line-height: 1;
+    box-sizing: border-box;
+    transition: none;
+}
+
+/* --- launcher button ---------------------------------------------------- */
+
+.shopbot .shopbot-launcher {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1040;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--shopbot-brand);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(59, 183, 126, .40);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .18s ease, background .18s ease;
+}
+
+.shopbot .shopbot-launcher:hover {
+    background: var(--shopbot-brand-dark);
+    transform: scale(1.06);
+}
+
+.shopbot .shopbot-launcher svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.shopbot .shopbot-launcher .shopbot-close-icon { display: none; }
+.shopbot.is-open .shopbot-launcher .shopbot-close-icon { display: block; }
+.shopbot.is-open .shopbot-launcher .shopbot-open-icon { display: none; }
+
+/* A single unread dot, so the first-time hint is noticeable but not loud. */
+.shopbot .shopbot-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #F74B81;
+    border: 2px solid #fff;
+}
+
+.shopbot.is-open .shopbot-dot { display: none; }
+
+/* --- panel -------------------------------------------------------------- */
+
+.shopbot .shopbot-panel {
+    position: fixed;
+    right: 24px;
+    bottom: 96px;
+    z-index: 1041;
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    height: 540px;
+    max-height: calc(100vh - 140px);
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .18);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+
+.shopbot.is-open .shopbot-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.shopbot .shopbot-header {
+    background: var(--shopbot-brand);
+    color: #fff;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.shopbot .shopbot-header h6 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.shopbot .shopbot-header span {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: .85;
+}
+
+/* White disc behind the avatar: the icon is navy artwork, and it needs a
+   light ground to read against the green header. */
+.shopbot .shopbot-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.shopbot .shopbot-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.shopbot .shopbot-minimise {
+    margin-left: auto;
+    padding: 0 4px;
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    opacity: .8;
+}
+
+.shopbot .shopbot-minimise:hover { opacity: 1; }
+
+/* --- messages ----------------------------------------------------------- */
+
+.shopbot .shopbot-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: #F8F9FA;
+    scroll-behavior: smooth;
+}
+
+.shopbot .shopbot-log::-webkit-scrollbar { width: 6px; }
+.shopbot .shopbot-log::-webkit-scrollbar-thumb {
+    background: #D6D6D6;
+    border-radius: 3px;
+}
+
+.shopbot .shopbot-msg {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.shopbot .shopbot-msg.from-user { justify-content: flex-end; }
+
+.shopbot .shopbot-bubble {
+    max-width: 84%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--shopbot-ink);
+    background: #fff;
+    border: 1px solid var(--shopbot-line);
+    border-bottom-left-radius: 4px;
+    word-wrap: break-word;
+}
+
+.shopbot .shopbot-msg.from-user .shopbot-bubble {
+    background: var(--shopbot-brand);
+    color: #fff;
+    border-color: var(--shopbot-brand);
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 4px;
+}
+
+.shopbot .shopbot-bubble strong { font-weight: 700; }
+.shopbot .shopbot-bubble em { font-style: italic; color: var(--shopbot-muted); }
+.shopbot .shopbot-msg.from-user .shopbot-bubble em { color: rgba(255, 255, 255, .85); }
+
+/* --- product / vendor cards --------------------------------------------- */
+
+.shopbot .shopbot-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0 12px;
+}
+
+.shopbot .shopbot-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid var(--shopbot-line);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.shopbot .shopbot-card:hover {
+    border-color: var(--shopbot-brand);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
+    text-decoration: none;
+}
+
+.shopbot .shopbot-card-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #F1F1F1;
+    flex-shrink: 0;
+}
+
+.shopbot .shopbot-card-body { min-width: 0; flex: 1; }
+
+.shopbot .shopbot-card-title {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--shopbot-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shopbot .shopbot-card-meta {
+    display: block;
+    font-size: 11px;
+    color: var(--shopbot-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shopbot .shopbot-card-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--shopbot-brand);
+}
+
+.shopbot .shopbot-card-old {
+    font-size: 12px;
+    color: var(--shopbot-muted);
+    text-decoration: line-through;
+    margin-left: 4px;
+    font-weight: 500;
+}
+
+.shopbot .shopbot-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: #FDF0F3;
+    color: #F74B81;
+    margin-left: 4px;
+}
+
+/* --- link buttons and suggestion chips ----------------------------------- */
+
+.shopbot .shopbot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.shopbot .shopbot-link {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: var(--shopbot-brand);
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.shopbot .shopbot-link:hover {
+    background: var(--shopbot-brand-dark);
+    text-decoration: none;
+}
+
+.shopbot .shopbot-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 16px 12px;
+    background: #F8F9FA;
+    flex-shrink: 0;
+}
+
+.shopbot .shopbot-chip {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--shopbot-brand);
+    background: #fff;
+    color: var(--shopbot-brand);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+
+.shopbot .shopbot-chip:hover {
+    background: var(--shopbot-brand);
+    color: #fff;
+}
+
+/* --- typing indicator ---------------------------------------------------- */
+
+.shopbot .shopbot-typing { display: flex; gap: 4px; padding: 4px 2px; }
+
+.shopbot .shopbot-typing i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #C4C4C4;
+    animation: shopbot-blink 1.2s infinite ease-in-out;
+}
+
+.shopbot .shopbot-typing i:nth-child(2) { animation-delay: .18s; }
+.shopbot .shopbot-typing i:nth-child(3) { animation-delay: .36s; }
+
+@keyframes shopbot-blink {
+    0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* --- composer ------------------------------------------------------------ */
+
+.shopbot .shopbot-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--shopbot-line);
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.shopbot .shopbot-input {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    border: 1px solid var(--shopbot-line);
+    border-radius: 22px;
+    padding: 9px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--shopbot-ink);
+    outline: none;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.shopbot .shopbot-input:focus {
+    border-color: var(--shopbot-brand);
+    box-shadow: none;
+}
+
+/* The theme's `button[type='submit']` rule targets this button, so every
+   property it sets is restated here at higher specificity. */
+.shopbot .shopbot-send {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    flex: 0 0 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--shopbot-brand);
+    background-color: var(--shopbot-brand);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color .15s ease;
+}
+
+.shopbot .shopbot-send:hover {
+    background-color: var(--shopbot-brand-dark) !important;
+}
+
+.shopbot .shopbot-send:disabled {
+    background-color: #C4C4C4 !important;
+    cursor: not-allowed;
+}
+
+/* The icon is dark navy artwork; this paints it white so it reads on the
+   green button. Delete the filter to show it in its original colour. */
+.shopbot .shopbot-send img {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
+    filter: brightness(0) invert(1);
+}
+
+/* --- phones -------------------------------------------------------------- */
+
+@media (max-width: 575px) {
+    .shopbot .shopbot-panel {
+        right: 12px;
+        left: 12px;
+        bottom: 88px;
+        width: auto;
+        height: calc(100vh - 130px);
+    }
+
+    .shopbot .shopbot-launcher {
+        right: 16px;
+        bottom: 16px;
+        width: 54px;
+        height: 54px;
+    }
+}

@@ -1,0 +1,53 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row justify-content-center pt-lg-4 text-center" style="margin-bottom: 200px; margin-top: 100px;">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <h1 class="display-404 py-lg-3">Payment Submitted</h1>
+        <h2 class="h3 mb-4">Thanks! We are checking your transfer for Order Id #{{ order.oid }}</h2>
+
+        <div class="border cart-totals text-start mb-4">
+            <div class="d-flex justify-content-between mb-2">
+                <p class="fw-bold">Amount</p>
+                <p>${{ order.price }}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p class="fw-bold">Transaction ID</p>
+                <p>{{ order.khqr_reference }}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p class="fw-bold">Submitted</p>
+                <p>{{ order.khqr_submitted_at }}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p class="fw-bold">Status</p>
+                <p>
+                    {% if order.paid_status %}
+                    <span class="badge rounded-pill alert-success text-success">Paid</span>
+                    {% elif order.khqr_status == "rejected" %}
+                    <span class="badge rounded-pill alert-danger text-danger">Not verified</span>
+                    {% else %}
+                    <span class="badge rounded-pill alert-warning text-warning">Pending verification</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <p class="fs-md mb-4">
+            We check {{ khqr_bank_name }} transfers manually, so this usually takes a few hours.
+            You will see the order marked as paid in your
+            <a href="{% url 'core:dashboard' %}">dashboard</a> once it clears.
+        </p>
+
+        {% if order.khqr_status == "rejected" %}
+        <a href="{% url 'core:khqr-payment' order.oid %}" class="btn">Submit payment again</a>
+        {% endif %}
+
+        <p class="fs-md mb-4">
+            <a href="{% url 'core:contact' %}">Contact us</a> if you have any issue or question
+        </p>
+    </div>
+</div>
+
+{% endblock content %}

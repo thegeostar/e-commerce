@@ -59,7 +59,8 @@
                                 Shipping Method: {{order.shipping_method}} <br />
                                 Order Id: #{{order.oid}} <br>
                                 Order Status: {{order.product_status|title}} <br>
-                                Payment Status: {% if order.paid_status == True %} Paid {% else %} Not Paid {% endif %} 
+                                Payment Method: {{order.get_payment_method_display|default:"—"}} <br>
+                                Payment Status: {% if order.paid_status == True %} Paid {% else %} Not Paid {% endif %}
                             </p>
                         </div>
                     </article>
@@ -84,6 +85,116 @@
                 <!-- col// -->
             </div>
             <!-- row // -->
+
+            {% if order.payment_method == "khqr" %}
+            <div class="row mb-30">
+                <div class="col-lg-12">
+                    <div class="card border">
+                        <header class="card-header">
+                            <h5 class="mb-0">KHQR Payment Verification</h5>
+                        </header>
+                        <div class="card-body">
+                            <div class="row mb-20">
+                                <div class="col-md-7">
+                                    <dl class="dlist">
+                                        <dt>Transaction ID:</dt>
+                                        <dd><b>{{order.khqr_reference|default:"—"}}</b></dd>
+                                    </dl>
+                                    <dl class="dlist">
+                                        <dt>Amount claimed:</dt>
+                                        <dd><b class="h6">${{order.price}}</b></dd>
+                                    </dl>
+                                    <dl class="dlist">
+                                        <dt>Submitted:</dt>
+                                        <dd>{{order.khqr_submitted_at|default:"—"}}</dd>
+                                    </dl>
+                                    <dl class="dlist">
+                                        <dt>Buyer note:</dt>
+                                        <dd>{{order.khqr_note|default:"—"}}</dd>
+                                    </dl>
+                                    <dl class="dlist">
+                                        <dt>Verification:</dt>
+                                        <dd>
+                                            {% if order.khqr_status == "approved" %}
+                                                <span class="badge rounded-pill alert-success text-success">Approved</span>
+                                            {% elif order.khqr_status == "rejected" %}
+                                                <span class="badge rounded-pill alert-danger text-danger">Rejected</span>
+                                            {% elif order.khqr_status == "pending" %}
+                                                <span class="badge rounded-pill alert-warning text-warning">Pending</span>
+                                            {% else %}
+                                                <span class="badge rounded-pill alert-secondary text-secondary">Not submitted</span>
+                                            {% endif %}
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-5">
+                                    {% if order.khqr_proof %}
+                                        <a href="{{order.khqr_proof.url}}" target="_blank" rel="noopener">
+                                            <img src="{{order.khqr_proof.url}}" style="max-width: 100%; max-height: 260px; border-radius: 4px;" alt="Payment screenshot" />
+                                        </a>
+                                        <p class="text-muted mt-2 mb-0"><small>Click to open full size</small></p>
+                                    {% else %}
+                                        <p class="text-muted mb-0">No screenshot uploaded.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <i class="material-icons md-info"></i>
+                                Check this transaction ID against your ACLEDA statement before approving.
+                                Approving is what marks the order as <b>paid</b>.
+                            </div>
+
+                            <form method="POST" action="{% url 'useradmin:verify_khqr_payment' order.oid %}">
+                                {% csrf_token %}
+                                <button class="btn btn-primary" type="submit" name="action" value="approve">Approve &amp; mark as paid</button>
+                                <button class="btn btn-light" type="submit" name="action" value="reject">Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if order.payment_method == "cod" %}
+            <div class="row mb-30">
+                <div class="col-lg-12">
+                    <div class="card border">
+                        <header class="card-header">
+                            <h5 class="mb-0">Cash on Delivery</h5>
+                        </header>
+                        <div class="card-body">
+                            <dl class="dlist">
+                                <dt>Amount to collect:</dt>
+                                <dd><b class="h6">${{order.price}}</b></dd>
+                            </dl>
+                            <dl class="dlist">
+                                <dt>Cash received:</dt>
+                                <dd>
+                                    {% if order.paid_status %}
+                                        <span class="badge rounded-pill alert-success text-success">Collected</span>
+                                    {% else %}
+                                        <span class="badge rounded-pill alert-warning text-warning">Not collected yet</span>
+                                    {% endif %}
+                                </dd>
+                            </dl>
+
+                            {% if not order.paid_status %}
+                            <div class="alert alert-warning">
+                                <i class="material-icons md-info"></i>
+                                Mark this as collected only once the courier has handed over the cash.
+                            </div>
+                            <form method="POST" action="{% url 'useradmin:confirm_cod_payment' order.oid %}">
+                                {% csrf_token %}
+                                <button class="btn btn-primary" type="submit">Cash collected — mark as paid</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="table-responsive">

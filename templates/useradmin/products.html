@@ -46,7 +46,10 @@
                     <div class="col-lg-1 col-sm-2 col-4 col-date"><span>{{p.date}}</span></div>
                     <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
                         <a href="{% url 'useradmin:dashboard-edit-products'  p.pid %}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                        <a href="{% url 'useradmin:dashboard-delete-products' p.pid  %}" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
+                        <form method="POST" action="{% url 'useradmin:dashboard-delete-products' p.pid %}" class="d-inline" onsubmit="return confirm('Delete {{ p.title|escapejs }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </button>
+                        </form>
                     </div>
                 </div>
             </article>

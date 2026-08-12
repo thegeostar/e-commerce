@@ -1,0 +1,22 @@
+{% comment %}
+Compact thumbnail + title + price row, used by the four homepage columns
+(Top Selling / Trending / Recently added / Top Rated).
+{% endcomment %}
+<article class="row align-items-center hover-up">
+    <figure class="col-md-4 mb-0">
+        <a href="{% url 'core:product-detail' p.pid %}"><img src="{{ p.image.url }}" alt="{{ p.title }}" style="height: 90px; width: 100%; object-fit: cover;" /></a>
+    </figure>
+    <div class="col-md-8 mb-0">
+        <h6>
+            <a href="{% url 'core:product-detail' p.pid %}">{{ p.title|truncatechars:45 }}</a>
+        </h6>
+        <div class="product-rate-cover">
+            <i class="fas fa-star text-warning"></i>
+            <span class="font-small ml-5 text-muted"> ({{ p.reviews.all.count }})</span>
+        </div>
+        <div class="product-price">
+            <span>${{ p.price }}</span>
+            {% if p.get_precentage %}<span class="old-price">${{ p.old_price }}</span>{% endif %}
+        </div>
+    </div>
+</article>

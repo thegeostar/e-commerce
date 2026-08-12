@@ -1,0 +1,94 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                <span></span> Blog
+                {% if category %}<span></span> {{ category.title }}{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="section-title style-2 mb-30">
+                        <h3>{{ heading }}</h3>
+                    </div>
+
+                    {% if query %}
+                    <p class="mb-30">{{ posts.paginator.count }} result{{ posts.paginator.count|pluralize }} for &ldquo;{{ query }}&rdquo;</p>
+                    {% endif %}
+
+                    <div class="loop-grid pr-30">
+                        <div class="row">
+                            {% for post in posts %}
+                            <article class="col-xl-4 col-lg-6 col-md-6 hover-up mb-30 animated">
+                                <div class="post-thumb">
+                                    <a href="{{ post.get_absolute_url }}">
+                                        {% if post.image %}
+                                        <img class="border-radius-15" style="height: 220px; width: 100%; object-fit: cover;" src="{{ post.image.url }}" alt="{{ post.title }}" />
+                                        {% else %}
+                                        <img class="border-radius-15" style="height: 220px; width: 100%; object-fit: cover;" src="{% static 'assets/imgs/blog/header-bg.png' %}" alt="{{ post.title }}" />
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="entry-content-2">
+                                    {% if post.category %}
+                                    <div class="entry-meta mb-10 mt-15">
+                                        <a class="entry-meta font-xs color-grey" href="{% url 'blog:category-post-list' post.category.cid %}">{{ post.category.title }}</a>
+                                    </div>
+                                    {% endif %}
+                                    <h4 class="post-title mb-15">
+                                        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                                    </h4>
+                                    <p class="post-exerpt font-small color-grey mb-10">{{ post.description|truncatewords:20 }}</p>
+                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
+                                        <span class="mr-10"><i class="fi-rs-calendar mr-5"></i>{{ post.date|date:"d M Y" }}</span>
+                                        <span><i class="fi-rs-eye mr-5"></i>{{ post.views }}</span>
+                                    </div>
+                                </div>
+                            </article>
+                            {% empty %}
+                            <div class="col-12">
+                                <p>No posts have been published yet.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% if posts.paginator.num_pages > 1 %}
+                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                        <nav aria-label="Blog pages">
+                            <ul class="pagination justify-content-start">
+                                {% if posts.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"><i class="fi-rs-arrow-small-left"></i></a>
+                                </li>
+                                {% endif %}
+                                {% for num in posts.paginator.page_range %}
+                                <li class="page-item {% if num == posts.number %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                                </li>
+                                {% endfor %}
+                                {% if posts.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}"><i class="fi-rs-arrow-small-right"></i></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% include "blog/partials/sidebar.html" %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock content %}
