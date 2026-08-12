@@ -1,0 +1,26 @@
+# Working dependency set for running V2 locally on Python 3.12.
+#
+# The shipped requirements.txt targets Python 3.9 (see runtime.txt) and pins
+# versions that cannot build on 3.12 (Pillow 9.1.0, pandas 2.1.1, psycopg2 via
+# django-heroku, old boto3). It also lists django-environ while settings.py
+# actually imports `environs`, and omits django-ckeditor, which core migration
+# 0010 needs at import time.
+#
+# This file lists only what the code actually imports, at 3.12-compatible
+# versions. Install with:  pip install -r requirements-local.txt
+
+Django>=4.2.8,<5.0        # 4.2 LTS; 4.2.8 is the first release supporting 3.12
+Pillow                    # ImageField on product/category/vendor models
+environs                  # settings.py: `from environs import Env`
+
+django-taggit             # core.models: TaggableManager
+django-crispy-forms       # settings: CRISPY_TEMPLATE_PACK
+crispy-bootstrap5         # settings: INSTALLED_APPS 'crispy_bootstrap5'
+django-ckeditor-5         # settings: INSTALLED_APPS 'django_ckeditor_5'
+django-ckeditor           # core/migrations/0010 imports ckeditor_uploader.fields
+django-jazzmin            # settings: INSTALLED_APPS 'jazzmin' (admin theme)
+django-paypal             # settings: 'paypal.standard.ipn'; core.views PayPalPaymentsForm
+
+shortuuid                 # ShortUUIDField on orders/products
+stripe                    # core.views checkout
+requests                  # core.views
